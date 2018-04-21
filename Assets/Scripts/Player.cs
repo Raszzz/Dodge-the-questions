@@ -1,13 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class PlayerMovement : MonoBehaviour {
+public class Player : MonoBehaviour {
 
     Rigidbody2D rgbd2D;
     private float speed = 250f;
 
-    Vector2 velocity = new Vector2();
+    int cardsOnFace = 0;
+    Vector2 velocity;
     Vector2 motionless = new Vector2(0, 0);
 	// Use this for initialization
 	void Start()
@@ -15,17 +17,31 @@ public class PlayerMovement : MonoBehaviour {
         rgbd2D = GetComponent<Rigidbody2D>();
 	}
 	
-    /*
-    void OnCollisionEnter2D(Collision2D collision)
-    {   
-        print("collision detected");
+    void CheckIfGameOver()
+    {
+        if(cardsOnFace >= 4)
+        {
+            SceneManager.LoadScene("LoseScreen");
+        }
     }
-     */
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if(other.gameObject.tag == "Bullet")
+        {
+            other.gameObject.SendMessage("DestroyBullet");
+            cardsOnFace++;
+            CheckIfGameOver();
+            // create instance of trivia card
+        }
+    }
+     
 	// Update is called once per frame
 
 	void Update()
     {
         MovementInput();
+        
 	}
 
     void MovementInput()
