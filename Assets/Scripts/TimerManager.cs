@@ -10,17 +10,24 @@ public class TimerManager : MonoBehaviour {
     // maybe have an alarm class/ yes?
     private int initialTime = 100;
     private Text timeText;
+    
     private class Timer
     {
         public int minutes {get; set;}
         public int seconds {get; set;}
 
         public event EventHandler TimeOut;
+        public event EventHandler TooMuchTime;
         public void setTime(int time)
         {
             if(time < 0)
             {
                 OnTimeOut();
+                return;
+            }
+            else if(time > 100 * 2)
+            {
+                OnTooMuchTime();
                 return;
             }
             minutes = time / 60;
@@ -62,6 +69,15 @@ public class TimerManager : MonoBehaviour {
                 TimeOut(this, EventArgs.Empty);
             }
         }
+
+        public void OnTooMuchTime()
+        {
+            if(TooMuchTime != null)
+            {
+                TooMuchTime(this, EventArgs.Empty);
+            }
+        }
+
         public Timer(int time)
         {
             minutes = time / 60;
@@ -75,6 +91,28 @@ public class TimerManager : MonoBehaviour {
         }
     }
 
+    void respondToCardAnwser(bool correctAnswer)
+    {
+        int time = timer.getTime();
+        if(correctAnswer)
+        {
+            int calcTime = time - 1;
+            print("time set: " + calcTime);
+            timer.setTime(calcTime);          
+        }
+        else if(!correctAnswer)
+        {
+            timer.setTime(time + 15);
+        }
+        handleTimerTextAnimation();
+    }
+
+    void handleTimerTextAnimation()
+    {
+        StopCoroutine("AnimateTextTimer");
+        StartCoroutine("AnimateTextTimer");
+    }
+
     private Timer timer;
 
 	// Use this for initialization
@@ -83,10 +121,22 @@ public class TimerManager : MonoBehaviour {
     {
         timer = new Timer(initialTime);
         timer.TimeOut += HandleTimeOut;
+        timer.TooMuchTime += HandleTooMuchTime;
 		timeText = GameObject.Find("timeText").GetComponent<Text>();
-        StartCoroutine("timerHandle");
+        StartCutScene cutScene = GameObject.FindGameObjectWithTag("CutScene").GetComponent<StartCutScene>();
+        cutScene.endCutScene += HandleOnEndCutScene;
 	}
+
+    void HandleOnEndCutScene(System.Object s, EventArgs e)
+    {
+        StartCoroutine("timerHandle");
+    }
 	
+    public void HandleTooMuchTime(System.Object s, EventArgs e)
+    {
+        StopCoroutine("timerHandle");
+        SceneManager.LoadScene("LoseTimeScreen");
+    }
     public void HandleTimeOut(System.Object s, EventArgs e)
     {
         StopCoroutine("timerHandle");
@@ -99,11 +149,26 @@ public class TimerManager : MonoBehaviour {
     {
         while(true)
         {
-            // TODO handle resetting the timer when 
+            // TODO handle resetting the timer when WHAT?? OMG WHAT?????
             timer.tickDown();
             timeText.text = timer.timeString();
             yield return new WaitForSeconds(1f);
         }
+    }
+
+    IEnumerator AnimateTextTimer()
+    {
+        Vector2 initScale = timeText.transform.localScale;
+        Vector2 scaleFactor;
+        Vector2 scaleSize = initScale;
+        for(float f = 1; f >= 0; f -= .1f)
+        {
+            scaleFactor = initScale * f;
+            scaleSize = initScale + scaleFactor;
+            timeText.transform.localScale = scaleSize;
+            yield return null;
+        }
+        timeText.transform.localScale = initScale;
     }
 }
 

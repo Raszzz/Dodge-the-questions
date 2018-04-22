@@ -13,7 +13,21 @@ public class Bullet : MonoBehaviour {
 	void Start()
     {
 		transform.position = GameObject.Find("Boss").transform.position;
-        transform.localScale = transform.localScale * size;
+        transform.localScale *=  size;
+        
+        // this resizing code doesn't seem to be working.
+        Bounds colliderBound = GetComponent<Collider2D>().bounds;
+        
+        Vector2 colliderBoundsSize = colliderBound.size;
+        Vector2 expandedcolliderBounds = colliderBoundsSize * size;
+        print("size of collider in bullet: " + colliderBoundsSize);
+        print("expand size of bound: " + expandedcolliderBounds);
+
+        colliderBound.size = expandedcolliderBounds;
+        colliderBound.Expand(size);
+        print("size of collider after expansion: " + colliderBound.size);
+
+
         direction.y = Mathf.Sin(angleFactor * Mathf.PI);
         direction.x = Mathf.Cos(angleFactor * Mathf.PI);  
 	}

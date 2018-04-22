@@ -93,8 +93,7 @@ public class TriviaCard : MonoBehaviour {
         else if(!answer)
         {
             cardMessage = new CardMessage(gameObject, false);
-            triviaCardsManager.SendMessage("CardMessageWhenClicked", cardMessage);
-            // send message to triviacardmanager object and send the gameObject 
+            triviaCardsManager.SendMessage("CardMessageWhenClicked", cardMessage); 
         }
     }
 }

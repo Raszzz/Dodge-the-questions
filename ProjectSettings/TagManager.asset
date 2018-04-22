@@ -6,6 +6,13 @@ TagManager:
   tags:
   - Wall
   - Bullet
+  - Timer
+  - PipeLine
+  - tcManager
+  - MenuButton
+  - PlayButton
+  - TutorialButton
+  - CutScene
   layers:
   - Default
   - TransparentFX

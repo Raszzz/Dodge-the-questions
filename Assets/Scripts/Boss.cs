@@ -1,16 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using Random = UnityEngine.Random;
 
 public class Boss : MonoBehaviour {
 
     [SerializeField] Bullet bulletPrefab;
-    bool shootRoutine = false;
-    float speed = 3;
+    BossBehaviorPresets behaviorPresets;
 
-    // TODO test presets and put that on to a 
-    // presets array and randomly call a new behavior preset at the end
-    // of the move coroutine
+    SpriteRenderer spriteRenderer;
 
     // TODO diff types of shooting and moving patterns
 
@@ -19,42 +18,61 @@ public class Boss : MonoBehaviour {
 	// Use this for initialization
 	void Start()
     {
-        SelectPresetBehavior();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        behaviorPresets = GetComponent<BossBehaviorPresets>();
+        if(behaviorPresets == null) { print("couldnt load behavior presets"); }
+        StartCutScene cutScene = GameObject.FindGameObjectWithTag("CutScene").GetComponent<StartCutScene>();
+        cutScene.endCutScene += HandleOnEndCutScene;
+
 	}
     
+    void HandleOnEndCutScene(System.Object s, EventArgs e)
+    {
+        SelectPresetBehavior(); // handle
+    }
+
     void SelectPresetBehavior()
     {
-        // randomly select a behavior preset from a behavior
-        // preset array here
+        // random selection of behavior presets
+        
+        float max_array = Convert.ToSingle(
+            behaviorPresets.behaviorArray.Length) - float.Epsilon;
+        int randRange = (int)Random.Range(0, max_array);
+        BossBehaviorPresets.BossBehavior behaviorData = behaviorPresets.behaviorArray[randRange];
 
-        // StopCoroutine("shoot");
-        // StartCoroutine("shoot", behaviorArray[choice]);
+        StopCoroutine("shoot");
+        StartCoroutine("shoot", behaviorData);
+        StartCoroutine(move(behaviorData.bossSpeed));
+        
+        
 
-        // Band aid solution to stop the courotine calls
-        // from overlapping
-        // when you get the boosbehavior structs done
-        // start the routine as string and pass the whole
-        // struct as an argument.
-        if(!shootRoutine)
-        {
-            StartCoroutine(shoot(1f, 4f, .5f, 1.5f));
-            shootRoutine = true;
-        }
-        StartCoroutine(move(1f));
+
+        // default behavior for testing presets
+        /*
+        BossBehaviorPresets.BossBehavior behaviorTest = new BossBehaviorPresets.BossBehavior(
+            15f, 5f, 0.2f, 1.5f
+        );
+        StopCoroutine("shoot");
+        StartCoroutine("shoot", behaviorTest);
+        StartCoroutine(move(behaviorTest.bossSpeed));
+         */
+        
     }
 
 
     IEnumerator move(float bossSpeed)
     {
-        while(transform.position.x < -9.5f)
+        while(transform.position.x < -9.1f)
         {
+            spriteRenderer.flipX = true;
             currentPosition = transform.position;
             currentPosition.x += bossSpeed * Time.deltaTime;
             transform.position = currentPosition;
             yield return null;
         }
-        while(transform.position.x > -20f)
+        while(transform.position.x > -21f)
         {
+            spriteRenderer.flipX = false;
             currentPosition = transform.position;
             currentPosition.x -= bossSpeed * Time.deltaTime;
             transform.position = currentPosition;
@@ -64,18 +82,16 @@ public class Boss : MonoBehaviour {
     }
 
     // bullet angle needs to be between 1 and 2.
-	IEnumerator shoot(float bulletSize, float bulletSpeed,
-                      float bulletInterval, float bulletAngle)
+	IEnumerator shoot(BossBehaviorPresets.BossBehavior behaviorData)
     {
         while(true)
         {
             // TODO ping pong and change the value of bullet ange
             // at each co routine
             Bullet bullet = Instantiate(bulletPrefab) as Bullet;
-            bullet.size = bulletSize;
-            bullet.speed = bulletSpeed;
-            bullet.angleFactor = bulletAngle;
-            yield return new WaitForSeconds(bulletInterval);
+            bullet.speed = behaviorData.bulletSpeed;
+            bullet.angleFactor = behaviorData.bulletAngle;
+            yield return new WaitForSeconds(behaviorData.shootingFrequency);
         }
     }
 }

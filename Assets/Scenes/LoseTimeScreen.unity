@@ -443,7 +443,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "Congratulations!\nYou won thousands of \nshoot 'em up games!"
+  m_Text: 'You accumulated too much time.
+
+    They couldn''t pass any ads.'
 --- !u!222 &1102264681
 CanvasRenderer:
   m_ObjectHideFlags: 0

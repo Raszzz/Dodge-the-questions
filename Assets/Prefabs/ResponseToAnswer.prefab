@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 224104235296037844}
   - component: {fileID: 222930363509011454}
   - component: {fileID: 114143777378570266}
-  - component: {fileID: 114230373957726604}
+  - component: {fileID: 114398297286578704}
   m_Layer: 5
   m_Name: ResponseToAnswer
   m_TagString: Untagged
@@ -56,7 +56,7 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!114 &114230373957726604
+--- !u!114 &114398297286578704
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -67,10 +67,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 817f19cdd1f65d94a92091616b50d264, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  correctSymbol: {fileID: 212888726288040860, guid: c76121f9c69c4e6489661a2fbb84532a,
-    type: 2}
-  incorrectSymbol: {fileID: 212667540268439210, guid: c1e1c566087ff1246b7733e7b2237e39,
-    type: 2}
+  correctAnswerSymbol: {fileID: 21300000, guid: 074c8f29ac3260640baaba8146d47613,
+    type: 3}
+  incorrectAnswerSymbol: {fileID: 21300000, guid: 5ed0c432f8d4c914e9090b1fc75806de,
+    type: 3}
 --- !u!222 &222930363509011454
 CanvasRenderer:
   m_ObjectHideFlags: 1

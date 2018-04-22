@@ -2,31 +2,37 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System;
 
 public class Player : MonoBehaviour {
 
     Rigidbody2D rgbd2D;
     private float speed = 250f;
 
+    bool pausedForCutscene = true;
+    TriviaCardsManager triviaCardsManager;
     // temp
-    int cardsOnFace = 0;
+    //int cardsOnFace = 0;
+    SpriteRenderer spriteRenderer;
     Vector2 velocity;
     Vector2 motionless = new Vector2(0, 0);
 	// Use this for initialization
 	void Start()
     {
         rgbd2D = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        if(spriteRenderer == null) { print("sprite render in player is null"); }
+        triviaCardsManager = GameObject.FindGameObjectWithTag("tcManager").GetComponent<TriviaCardsManager>();
+        if(triviaCardsManager != null){ print("player connected to trivia card manager"); }
+        StartCutScene cutScene = GameObject.FindGameObjectWithTag("CutScene").GetComponent<StartCutScene>();
+        cutScene.endCutScene += HandleOnEndCutScene;
+        StartCoroutine(AnimateSprite());
 	}
-	
-    void CheckIfGameOver()
-    {   
-        // temporary
-        if(cardsOnFace >= 4)
-        {
-            SceneManager.LoadScene("LoseScreen");
-        }
-    }
 
+    void HandleOnEndCutScene(System.Object s, EventArgs e)
+    {
+        pausedForCutscene = false;
+    }
     void GameOver()
     {
         SceneManager.LoadScene("LoseScreen");
@@ -36,9 +42,7 @@ public class Player : MonoBehaviour {
         if(other.gameObject.tag == "Bullet")
         {
             other.gameObject.SendMessage("DestroyBullet");
-            cardsOnFace++;
-            CheckIfGameOver();
-            // create instance of trivia card
+            triviaCardsManager.SendMessage("PlayerHit");
         }
     }
      
@@ -46,6 +50,7 @@ public class Player : MonoBehaviour {
 
 	void Update()
     {
+        if(pausedForCutscene) { return; }
         MovementInput();
 	}
 
@@ -69,5 +74,15 @@ public class Player : MonoBehaviour {
             velocity.y -= speed * Time.deltaTime;
         }
         rgbd2D.velocity = velocity;
+    }
+
+    IEnumerator AnimateSprite()
+    {
+        for(int i = 0;; i++)
+        {
+            if(i > 10) { i = 0;}
+            spriteRenderer.flipX = i % 2 == 0;
+            yield return new WaitForSeconds(.5f);
+        }
     }
 }

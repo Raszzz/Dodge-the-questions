@@ -4,41 +4,69 @@ using UnityEngine;
 using UnityEngine.UI;
 public class ResponseToAnswerAnimation : MonoBehaviour {
 
+    public Sprite correctAnswerSymbol;
+    public Sprite incorrectAnswerSymbol;
     Image image;
-    [SerializeField] SpriteRenderer correctSymbol;
-    [SerializeField] SpriteRenderer incorrectSymbol;
     bool correctAnswer;
 	// Use this for initialization
-	void Start () {
+	void Awake()
+    {
         image = GetComponent<Image>();
+        if(image == null) { print("image component is null"); }
+        //if(image.sprite == null) { print("sprt in image is null");}
 	}
 	
     public void setAnswer(bool answer)
-    {
+    {   
+        //print("enter set answer rtan");
+        
         if(answer)
         {
-            image.sprite = correctSymbol.sprite;
+            Sprite correctSymbol = Instantiate(correctAnswerSymbol);
+            image.sprite = correctSymbol;
             AnimationCorrectAnswer();
         }
         else
         {
-            image.sprite = incorrectSymbol.sprite;
+            Sprite incorrectSymbol = Instantiate(incorrectAnswerSymbol);
+            image.sprite = incorrectSymbol;
+            AnimationIncorrectAnswer();
         }
     }
     
+    void AnimationIncorrectAnswer()
+    {
+        StartCoroutine(Blink());
+    }
     void AnimationCorrectAnswer()
     {
         StartCoroutine(Fade());
         StartCoroutine(MoveUp());
     }
 
+    IEnumerator Blink()
+    {
+        Color blink;
+        // starts at one so the first frame is visible
+        for(int intervals = 1; intervals < 6; intervals++)
+        {
+            blink = image.color;
+            blink.a = intervals % 2;
+            image.color = blink;
+            yield return new WaitForSeconds(.5f);    
+        }
+        blink = image.color;
+        blink.a = 0;
+        image.color = blink;
+        GameObject.Destroy(gameObject);
+    }
     IEnumerator MoveUp()
     {
         Vector2 myPosition;
-        for(float f = 0; f <= 50; f -= .5f)
+        for(float f = 0; f <= 50; f += .5f)
         {
             myPosition = image.transform.position;
-            myPosition.x += f;
+            myPosition.y += f;
             image.transform.position = myPosition;
             yield return null;    
         }

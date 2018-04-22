@@ -10,6 +10,12 @@ public class TriviaCardsManager : MonoBehaviour {
     Image[] questionCards = new Image[3];
     Canvas canvas;
     CardData cardData;
+
+    AudioSource audioSource;
+
+    [SerializeField] AudioClip correctAnswerAudio;
+    [SerializeField] AudioClip wrongAnswerAudio;
+    PipeLineTimerCardsManager pipeLineToTimer;
     [SerializeField] Image responseToAnswer;
     [SerializeField] Image questionCardPrefab;
 	// Use this for initialization
@@ -17,31 +23,21 @@ public class TriviaCardsManager : MonoBehaviour {
     {
 		canvas = GetComponent<Canvas>();
         cardData = GetComponent<CardData>();
+        audioSource = GetComponent<AudioSource>();
+        pipeLineToTimer = GameObject.FindGameObjectWithTag("PipeLine").GetComponent<PipeLineTimerCardsManager>();
+        //if(pipeLineToTimer != null) { print("card mnger: conneceted to the pipeline component");}
 	}
 	
 	// Update is called once per frame
     
-	void Update()
+    void PlayerHit()
     {
-        // test
-		if(Input.GetKeyDown(KeyCode.Space))
-        {
-            PutCardOnScreen();
-        }
-	}
+        PutCardOnScreen();
+    }
 
     void CardMessageWhenClicked(TriviaCard.CardMessage cardMessage)
     {
-        //TriviaCard triviaCard = cardMessage.gameObject.GetComponent<TriviaCard>();
-        //if(triviaCard != null ) { print("this object is a card");}
-        /*
-        if(triviaCard == null)
-        {   
-            print("message badly received" + cardMessage);
-            return;
-        }
-         */
-        print("received object");
+
         if(cardMessage.answer)
         {
             CorrectAnswer(cardMessage.gameObject);
@@ -52,43 +48,54 @@ public class TriviaCardsManager : MonoBehaviour {
         }  
     }
 
+
     void WrongAnswer(GameObject gameCard)
     {
-        print("wrong answer");
-        
-        // overlay ResponseToAnswer to the card position
-        // load the incorrect sprite
-        // Start the animation coroutine wrongAnswer
-        // when the coroutine ends delete the object
+        audioSource.PlayOneShot(wrongAnswerAudio);
+        pipeLineToTimer.SendMessage("MessageToAlarm", false);
+        //print("wrong answer");
+        Image response = Instantiate(responseToAnswer);
+        response.transform.SetParent(canvas.transform, false);
+        response.transform.localPosition = gameCard.transform.localPosition;
+        response.GetComponent<ResponseToAnswerAnimation>().setAnswer(false);
+        StartCoroutine(InvokeDestroyGameObject(gameCard));
+    }
+
+    IEnumerator InvokeDestroyGameObject(GameObject gameObject)
+    {
+        yield return new WaitForSeconds(0.5f * 5f);
+        GameObject.Destroy(gameObject);
+        print("card destroy after 3 seconds ish");
     }
     void CorrectAnswer(GameObject gameCard)
     {
-        print("correct answer");
+        audioSource.PlayOneShot(correctAnswerAudio);
+        pipeLineToTimer.SendMessage("MessageToAlarm", true);
+        //print("correct answer");
         Image response = Instantiate(responseToAnswer);
         response.transform.SetParent(canvas.transform, false);
-        response.transform.localPosition = gameCard.transform.position;
+        response.transform.localPosition = gameCard.transform.localPosition;
+        response.GetComponent<ResponseToAnswerAnimation>().setAnswer(true);
         GameObject.Destroy(gameCard);
-        // overlay ResponseToAnswer to the card position
-        // load the incorrect sprite
-        // delete the object
     }
 
     void sendMessageToPlayerGameIsOver()
     {   
-        // bugged - but change game object name, maybe now its working
-        /*
-        GameObject player = GameObject.Find("PlayerCharacter");
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if(player == null) { return; }
         player.SendMessage("GameOver");
-         */
     }
 
     void PutCardOnScreen()
     {
-        // determine space for card
-        //if(questionCards[0] == null ) {print("yes its empty");}
         int indexSpace = SpaceForCardOnTheScreen();
-        if(indexSpace == 4) { sendMessageToPlayerGameIsOver(); }
-        int randRange = selectProperRandom(0, cardData.cards.Length);
+        if(indexSpace == 4)
+        {
+            sendMessageToPlayerGameIsOver();
+            return;
+        }
+        float max_array = Convert.ToSingle(cardData.cards.Length) - float.Epsilon;
+        int randRange = (int)Random.Range(0, max_array);
         CardData.Card triviaCardData = cardData.cards[randRange];
         
         // initialize the card data 
@@ -110,7 +117,6 @@ public class TriviaCardsManager : MonoBehaviour {
 
     int SpaceForCardOnTheScreen()
     {
-        print("array len" + questionCards.Length);
         for(int index = 0; index < questionCards.Length; index++)
         {
             if(questionCards[index] == null){ return index; }
@@ -118,18 +124,5 @@ public class TriviaCardsManager : MonoBehaviour {
         return 4; // 4 means there is no space for another card, just end the game
     }
 
-    int selectProperRandom(float min, float max)
-    {
-        float randNum = Random.Range(min, max);
-        float middleRange = (max - min) / 2;
-        if(randNum < middleRange)
-        {
-            return (int)randNum;
-        }
-        else
-        {
-            randNum -= float.Epsilon;
-            return (int)randNum;
-        }
-    }
+
 }

@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4751084726012754}
   - component: {fileID: 212155061130273726}
   - component: {fileID: 114628294426541230}
+  - component: {fileID: 114547052102288348}
   m_Layer: 0
   m_Name: Boss
   m_TagString: Player
@@ -41,6 +42,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114547052102288348
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1954969572612090}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f56ae107f1fbbcc41be3e9755a41a192, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114628294426541230
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -52,6 +64,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90742a0708e9f814e8e67678ee4a7a1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bulletPrefab: {fileID: 114459404914610402, guid: 12559b8c3dc375c4890e62f9f6cc64c5,
+    type: 2}
 --- !u!212 &212155061130273726
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -86,8 +100,8 @@ SpriteRenderer:
   m_SortingLayerID: -1833384749
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 89db444b0d87ea5418f476fd2d795a84, type: 3}
-  m_Color: {r: 0.045146756, g: 0.036494374, b: 0.1102941, a: 1}
+  m_Sprite: {fileID: 21300000, guid: d85324c9639fc8445bca213712b50c8b, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

@@ -25,5 +25,11 @@ public class CardData : MonoBehaviour {
         new Card("Who are you?", "I'm the correct", "I'm the incorrect.", 1),
         new Card("This question is", "false", "true", 2),
         new Card("110000011100101010101100011001001", "0", "1", 2),
+        new Card("yo mama is:", "ugly", "beautiful", 1),
+        new Card("my mama is:", "ugly", "beautiful", 2),
+        new Card("this isn't incorrect", "correct", "what?", 1),
+        new Card("is this correct?", "yes", "no", 1),
+        new Card("this card is:", "invalid", "valid", 2),
+        new Card("\"\"","null","empty",2)
     };
 }
