@@ -427,6 +427,8 @@ GameObject:
   - component: {fileID: 876002655}
   - component: {fileID: 876002654}
   - component: {fileID: 876002653}
+  - component: {fileID: 876002657}
+  - component: {fileID: 876002658}
   m_Layer: 5
   m_Name: GameGUI
   m_TagString: Untagged
@@ -510,6 +512,32 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &876002657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 876002652}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e403591c1af6da4dac5a202b03b0d65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  responseToAnswer: {fileID: 114143777378570266, guid: 166ccbb0bdd7fc644bd54dddaaba3fcb,
+    type: 2}
+  questionCardPrefab: {fileID: 114630408517412268, guid: 83f286948f07417438dbf5055e274993,
+    type: 2}
+--- !u!114 &876002658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 876002652}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f1f6c362a260b54aa64795c5f89e4db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &911323148
 GameObject:
   m_ObjectHideFlags: 0

@@ -5,6 +5,7 @@ using UnityEngine;
 public class Boss : MonoBehaviour {
 
     [SerializeField] Bullet bulletPrefab;
+    bool shootRoutine = false;
     float speed = 3;
 
     // TODO test presets and put that on to a 
@@ -25,8 +26,20 @@ public class Boss : MonoBehaviour {
     {
         // randomly select a behavior preset from a behavior
         // preset array here
-        StopCoroutine("shoot");
-        StartCoroutine(shoot(1f, 4f, .5f, 1.5f));
+
+        // StopCoroutine("shoot");
+        // StartCoroutine("shoot", behaviorArray[choice]);
+
+        // Band aid solution to stop the courotine calls
+        // from overlapping
+        // when you get the boosbehavior structs done
+        // start the routine as string and pass the whole
+        // struct as an argument.
+        if(!shootRoutine)
+        {
+            StartCoroutine(shoot(1f, 4f, .5f, 1.5f));
+            shootRoutine = true;
+        }
         StartCoroutine(move(1f));
     }
 

@@ -8,6 +8,7 @@ public class Player : MonoBehaviour {
     Rigidbody2D rgbd2D;
     private float speed = 250f;
 
+    // temp
     int cardsOnFace = 0;
     Vector2 velocity;
     Vector2 motionless = new Vector2(0, 0);
@@ -18,13 +19,18 @@ public class Player : MonoBehaviour {
 	}
 	
     void CheckIfGameOver()
-    {
+    {   
+        // temporary
         if(cardsOnFace >= 4)
         {
             SceneManager.LoadScene("LoseScreen");
         }
     }
 
+    void GameOver()
+    {
+        SceneManager.LoadScene("LoseScreen");
+    }
     void OnTriggerEnter2D(Collider2D other)
     {
         if(other.gameObject.tag == "Bullet")
@@ -41,7 +47,6 @@ public class Player : MonoBehaviour {
 	void Update()
     {
         MovementInput();
-        
 	}
 
     void MovementInput()
@@ -64,6 +69,5 @@ public class Player : MonoBehaviour {
             velocity.y -= speed * Time.deltaTime;
         }
         rgbd2D.velocity = velocity;
-
     }
 }
